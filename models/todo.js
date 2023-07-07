@@ -6,7 +6,8 @@ const todoSchema = new Schema({
     required: true // 這是個必填欄位
   },
   done: {
-    type: Boolean
+    type: Boolean,
+    default: false
   }
 })
 module.exports = mongoose.model('Todo', todoSchema)

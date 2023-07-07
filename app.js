@@ -64,10 +64,11 @@ app.get('/todos/:id/edit', (req, res) => {
 
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id
-  const name = req.body.name
+  const {name, done} = req.body
   Todo.findById(id)
     .then(todo => {
       todo.name = name
+      todo.done = done === 'on' //true
       return todo.save()
     })
     .then(todo => res.redirect(`/todos/${id}`))
@@ -83,6 +84,6 @@ app.post('/todos/:id/delete', (req, res) => {
 })
 
 // 設定 port 3000
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log('App is running on http://localhost:3000')
 })
