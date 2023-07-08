@@ -7,7 +7,7 @@
     {{todo.name}}</p>
 <a href="/todos/{{todo._id}}/edit">Edit</a>
 <a href="/">Back</a>
-<form action="/todos/{{todo._id}}/delete"
+<form action="/todos/{{todo._id}}?_method=DELETE"
   method="POST"
   style="display: inline">
   <button type="submit">Delete</button>

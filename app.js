@@ -2,14 +2,13 @@
 const express = require('express')
 const mongoose = require('mongoose') // 載入 mongoose
 const exphbs = require('express-handlebars')
+const methodOverride = require('method-override')
 const Todo = require('./models/todo')
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
-const app = express()
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }) // 設定連線到 mongoDB
 // 取得資料庫連線狀態
 const db = mongoose.connection
@@ -22,16 +21,19 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+const app = express()
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 
+app.use(methodOverride('_method'))
+
 // 設定首頁路由
 app.get('/', (req, res) => {
   Todo.find()
     .lean()
-    .sort({_id: 'desc'})
+    .sort({ _id: 'asc' })
     .then(todos => res.render('index', { todos }))
     .catch(error => console.error(error))
 })
@@ -63,9 +65,9 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
-  const {name, done} = req.body
+  const { name, done } = req.body
   Todo.findById(id)
     .then(todo => {
       todo.name = name
@@ -76,7 +78,7 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   Todo.findById(id)
     .then(todo => todo.remove())
@@ -85,6 +87,6 @@ app.post('/todos/:id/delete', (req, res) => {
 })
 
 // 設定 port 3000
-app.listen(3001, () => {
+app.listen(3000, () => {
   console.log('App is running on http://localhost:3000')
 })
