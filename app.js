@@ -3,7 +3,8 @@ const express = require('express')
 const mongoose = require('mongoose') // 載入 mongoose
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
-const Todo = require('./models/todo')
+
+const routes = require('./routes')
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -29,62 +30,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'))
 
-// 設定首頁路由
-app.get('/', (req, res) => {
-  Todo.find()
-    .lean()
-    .sort({ _id: 'asc' })
-    .then(todos => res.render('index', { todos }))
-    .catch(error => console.error(error))
-})
-
-app.get('/todos/new', (req, res) => {
-  res.render('new')
-})
-
-app.post('/todos', (req, res) => {
-  const name = req.body.name
-  Todo.create({ name })
-    .then(() => res.redirect('/'))
-    .catch(error => console.error(error))
-})
-
-app.get('/todos/:id', (req, res) => {
-  const id = req.params.id
-  Todo.findById(id)
-    .lean()
-    .then(todo => res.render('detail', { todo }))
-    .catch(error => console.log(error))
-})
-
-app.get('/todos/:id/edit', (req, res) => {
-  const id = req.params.id
-  Todo.findById(id)
-    .lean()
-    .then(todo => res.render('edit', { todo }))
-    .catch(error => console.log(error))
-})
-
-app.put('/todos/:id', (req, res) => {
-  const id = req.params.id
-  const { name, done } = req.body
-  Todo.findById(id)
-    .then(todo => {
-      todo.name = name
-      todo.done = done === 'on' //true
-      return todo.save()
-    })
-    .then(todo => res.redirect(`/todos/${id}`))
-    .catch(error => console.log(error))
-})
-
-app.delete('/todos/:id', (req, res) => {
-  const id = req.params.id
-  Todo.findById(id)
-    .then(todo => todo.remove())
-    .then(todo => res.redirect('/'))
-    .catch(error => console.log(error))
-})
+// 設定路由
+app.use(routes)
 
 // 設定 port 3000
 app.listen(3000, () => {
