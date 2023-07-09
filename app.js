@@ -1,6 +1,5 @@
 // 載入 express 並建構應用程式伺服器
 const express = require('express')
-const mongoose = require('mongoose') // 載入 mongoose
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 
