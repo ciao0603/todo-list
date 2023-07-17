@@ -24,7 +24,7 @@ router.post('/register', (req, res) => {
         console.log('User already exists')
         res.render('register', { name, email, password, confirmPassword })
       } else {
-        return User.create({name, email, password})
+        User.create({name, email, password})
           .then(() => res.redirect('/'))
           .catch(err => console.log(err))
       }
