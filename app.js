@@ -4,6 +4,7 @@ const session = require('express-session')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 
+const usePassport = require('./config/passport')
 const routes = require('./routes')
 
 require('./config/mongoose')
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'))
 
+usePassport(app)
 // 設定路由
 app.use(routes)
 
