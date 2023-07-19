@@ -8,7 +8,7 @@ module.exports = (app) => {
   app.use(passport.initialize())
   app.use(passport.session())
   // 設定本地登入策略
-  passport.use(new localStrategy({ usernameField: 'email' }, (email, name, done) => {
+  passport.use(new localStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({ email })
       .then(user => {
         if (!user) {
